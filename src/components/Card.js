@@ -1,13 +1,49 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Card.css';
 
 function Card({title}){
-    return(
-        <div className="card">
-            <h3>{title}</h3>
 
-        </div>
-    )
+    const [task, setTask] = useState("");
+    const [tasks, setTasks] = useState([]);
+
+    const addTask = () => {
+      if (task === "") return;
+      setTasks([...tasks, task]);
+      setTask("");
+    };
+
+    const deleteTask = (index) => {
+      const newTasks = tasks.filter((_, i) => i !== index);
+      setTasks(newTasks);
+    };
+
+
+
+    return (
+      <div className="card">
+        <h3>{title}</h3>
+          {title === "Tasks" && (
+            <>
+              <input
+                value={task}
+                onChange={(e) => setTask(e.target.value)}
+                placeholder="Enter Task"
+              ></input>
+
+              <button onClick={addTask}>Add Task</button>
+
+              <ul>
+                {tasks.map((t, i) => (
+                  <li key={i}>
+                    {t}
+                    <button onClick={() => deleteTask(i)}>X</button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+      </div>
+    );
 }
 
 
