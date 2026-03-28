@@ -2,54 +2,264 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  min-height: 200px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  flex-direction: column;
+  gap: 1.2rem;
 }
 
 .card h3 {
   font-size: 1.5rem;
-  color: #667eea;
+  color: #354ea0;
   margin: 0;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.5px;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(102, 126, 234, 0.2);
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.98);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
 }
 
-.card:active {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+/* ========== Task Section ========== */
+
+.card__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid rgba(102, 126, 234, 0.35);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  background: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
 }
+
+.card__input:focus {
+  border-color: #667eea;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.card__button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.card__button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(102, 126, 234, 0.4);
+}
+
+.card__button:active {
+  transform: translateY(0);
+}
+
+.card__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.card__task-item {
+  background: rgba(242, 245, 255, 0.8);
+  padding: 0.8rem 1rem;
+  border-radius: 9px;
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #253463;
+  font-weight: 500;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.card__task-item:hover {
+  background: rgba(242, 245, 255, 0.95);
+  border-color: rgba(102, 126, 234, 0.45);
+}
+
+.card__task-item span {
+  flex: 1;
+  word-break: break-word;
+}
+
+.card__delete {
+  border: none;
+  background: #f25555;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.card__delete:hover {
+  background: #d63a3a;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(242, 85, 85, 0.3);
+}
+
+.card__delete:active {
+  transform: scale(0.98);
+}
+
+/* ========== Timer Section ========== */
+
+.card__timer {
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.08) 0%,
+    rgba(118, 75, 162, 0.08) 100%
+  );
+  border-radius: 14px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+}
+
+.card__time {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #354ea0;
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.1em;
+  display: block;
+  line-height: 1;
+}
+
+.card__buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card__btn {
+  padding: 0.8rem 1.5rem;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.card__btn:hover {
+  background: #5468d7;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(102, 126, 234, 0.4);
+}
+
+.card__btn:active {
+  transform: translateY(0);
+}
+
+.card__btn--reset {
+  background: #764ba2;
+}
+
+.card__btn--reset:hover {
+  background: #653a85;
+}
+
+/* ========== Responsive ========== */
 
 @media (max-width: 768px) {
   .card {
     padding: 1.5rem;
-    min-height: 150px;
+    gap: 1rem;
   }
 
   .card h3 {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
+  }
+
+  .card__time {
+    font-size: 2.5rem;
+  }
+
+  .card__buttons {
+    gap: 0.5rem;
+  }
+
+  .card__btn {
+    min-width: 90px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
   .card {
     padding: 1rem;
-    min-height: 120px;
+    gap: 0.8rem;
   }
 
   .card h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .card__time {
+    font-size: 2rem;
+  }
+
+  .card__input {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .card__button {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    width: 100%;
+  }
+
+  .card__buttons {
+    flex-direction: column;
+  }
+
+  .card__btn {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .card__task-item {
+    padding: 0.65rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .card__delete {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
   }
 }
