@@ -55,6 +55,69 @@ function Card({ title }) {
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
 
+
+  // const currentDate = new Date().toDateString();
+  // const currentTime = new Date().toTimeString();
+
+  const recordTimeKey = "recordStreakTime";
+  const recordDateKey = "recordStreakDate";
+  
+  const[currDate, setCurrDate] = useState(() => {
+    return localStorage.getItem(recordDateKey) || "";
+    // return JSON.parse(streakDate);
+  });
+
+  const[currTime, setCurrTime] = useState(() => {
+    return localStorage.getItem(recordTimeKey) || "";
+    // return JSON.parse(streakTime);
+  });
+
+  useEffect(() =>{
+    const now = new Date();
+    const todayDate = now.toDateString();
+    const todayTime = now.toTimeString();
+
+    setCurrDate(todayDate);
+    setCurrTime(todayTime);
+
+    localStorage.setItem(recordDateKey, todayDate);
+    localStorage.setItem(recordTimeKey, todayTime);
+  }, [])
+
+  const streakKey = "streak";
+
+  const [streak, setStreak] = useState(() => {
+    return Number(localStorage.getItem(streakKey)) || 0;
+  });
+
+  useEffect(() => {
+    const today = new Date().toDateString();
+
+    const lastDate = localStorage.getItem(recordDateKey);
+    const savedStreak = Number(localStorage.getItem(streakKey)) || 0;
+
+    let newStreak = 0;
+
+    if(!lastDate || savedStreak === 0){
+      newStreak = 1;
+    
+    }
+    else if(lastDate === today){
+      newStreak = savedStreak;
+    }else{
+      newStreak = savedStreak +1;
+    }
+
+    setStreak(newStreak);
+
+    localStorage.setItem(streakKey, newStreak);
+    localStorage.setItem(recordDateKey, today);
+
+  }, []);
+
+  // localStorage.setItem(recordStreakTime, JSON.stringify(currTime));
+  // localStorage.setItem(recordStreakDate, JSON.stringify(currDate));
+
   return (
     <div className="card">
       <h3>{title}</h3>
@@ -110,6 +173,16 @@ function Card({ title }) {
                 Reset
               </button>
             </div>
+          </>
+        )}
+      </div>
+
+      <div>
+        {title === "Streak" && (
+          <>
+            <h2>{streak} Days</h2>
+            
+
           </>
         )}
       </div>
