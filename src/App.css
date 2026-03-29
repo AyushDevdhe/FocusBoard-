@@ -1,27 +1,61 @@
 .App {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: var(--primary-gradient);
+  padding: 2rem 1.5rem;
+  animation: gradientShift 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .App h1 {
   text-align: center;
   color: white;
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.5px;
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  letter-spacing: -1px;
+  animation: slideDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
+  .App {
+    padding: 1.5rem 1rem;
+  }
+
   .App h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
+  .App {
+    padding: 1rem;
+  }
+
   .App h1 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
   }
 }

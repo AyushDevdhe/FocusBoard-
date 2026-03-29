@@ -55,34 +55,26 @@ function Card({ title }) {
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
 
-
   // const currentDate = new Date().toDateString();
   // const currentTime = new Date().toTimeString();
 
+
+
+
+
+  //* Streak Implementation
   const recordTimeKey = "recordStreakTime";
   const recordDateKey = "recordStreakDate";
-  
-  const[currDate, setCurrDate] = useState(() => {
+
+  const [currDate, setCurrDate] = useState(() => {
     return localStorage.getItem(recordDateKey) || "";
     // return JSON.parse(streakDate);
   });
 
-  const[currTime, setCurrTime] = useState(() => {
+  const [currTime, setCurrTime] = useState(() => {
     return localStorage.getItem(recordTimeKey) || "";
     // return JSON.parse(streakTime);
   });
-
-  useEffect(() =>{
-    const now = new Date();
-    const todayDate = now.toDateString();
-    const todayTime = now.toTimeString();
-
-    setCurrDate(todayDate);
-    setCurrTime(todayTime);
-
-    localStorage.setItem(recordDateKey, todayDate);
-    localStorage.setItem(recordTimeKey, todayTime);
-  }, [])
 
   const streakKey = "streak";
 
@@ -90,30 +82,51 @@ function Card({ title }) {
     return Number(localStorage.getItem(streakKey)) || 0;
   });
 
+
   useEffect(() => {
     const today = new Date().toDateString();
+
+    //Calculating yesterday's date so that streak will break if one day not visited
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayString = yesterday.toDateString();
 
     const lastDate = localStorage.getItem(recordDateKey);
     const savedStreak = Number(localStorage.getItem(streakKey)) || 0;
 
     let newStreak = 0;
 
-    if(!lastDate || savedStreak === 0){
+    if (!lastDate || savedStreak === 0) {
       newStreak = 1;
-    
-    }
-    else if(lastDate === today){
+    } else if (lastDate === today) {
       newStreak = savedStreak;
-    }else{
-      newStreak = savedStreak +1;
+    } else if (lastDate === yesterdayString) {
+      newStreak = savedStreak + 1;
+    } else {
+      newStreak = 1; //Streak broken cause Missed one day
     }
 
     setStreak(newStreak);
 
     localStorage.setItem(streakKey, newStreak);
     localStorage.setItem(recordDateKey, today);
-
   }, []);
+
+  
+  useEffect(() => {
+    const now = new Date();
+    const todayDate = now.toDateString();
+    const todayTime = now.toTimeString();
+
+    setCurrDate(todayDate);
+    setCurrTime(todayTime);
+
+    // localStorage.setItem(recordDateKey, todayDate);
+    localStorage.setItem(recordTimeKey, todayTime);
+  }, []);
+
+  
+
 
   // localStorage.setItem(recordStreakTime, JSON.stringify(currTime));
   // localStorage.setItem(recordStreakDate, JSON.stringify(currDate));
@@ -181,8 +194,6 @@ function Card({ title }) {
         {title === "Streak" && (
           <>
             <h2>{streak} Days</h2>
-            
-
           </>
         )}
       </div>
