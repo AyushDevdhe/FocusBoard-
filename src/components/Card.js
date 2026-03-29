@@ -9,6 +9,14 @@ function Card({ title }) {
   const [isRunning, setIsRunning] = useState(false);
   const timeoutRef = useRef(null);
 
+  const streakKey = "streak";
+  const lastVisitKey = "lastVisitDate";
+
+  const [streak, setStreak] = useState(() => {
+    return Number(localStorage.getItem(streakKey)) || 0;
+  });
+
+  // Timer effect
   useEffect(() => {
     if (isRunning && time > 0) {
       timeoutRef.current = setTimeout(() => {
@@ -24,10 +32,39 @@ function Card({ title }) {
     return () => clearTimeout(timeoutRef.current);
   }, [isRunning, time]);
 
-  const startTimer = () => {
-    if (time > 0) {
-      setIsRunning(true);
+  // Streak logic — runs only once on mount
+  useEffect(() => {
+    const today = new Date().toDateString();
+    const lastVisit = localStorage.getItem(lastVisitKey);
+    const savedStreak = Number(localStorage.getItem(streakKey)) || 0;
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayString = yesterday.toDateString();
+
+    let newStreak;
+
+    if (!lastVisit) {
+      // First time ever visiting
+      newStreak = 1;
+    } else if (lastVisit === today) {
+      // Already visited today, don't change streak
+      newStreak = savedStreak;
+    } else if (lastVisit === yesterdayString) {
+      // Visited yesterday — continue streak
+      newStreak = savedStreak + 1;
+    } else {
+      // Missed a day — reset streak
+      newStreak = 1;
     }
+
+    setStreak(newStreak);
+    localStorage.setItem(streakKey, String(newStreak));
+    localStorage.setItem(lastVisitKey, today);
+  }, []);
+
+  const startTimer = () => {
+    if (time > 0) setIsRunning(true);
   };
 
   const pauseTimer = () => {
@@ -42,161 +79,70 @@ function Card({ title }) {
   };
 
   const addTask = () => {
-    if (task === "") return;
+    if (task.trim() === "") return;
     setTasks([...tasks, task]);
     setTask("");
   };
 
   const deleteTask = (index) => {
-    const newTasks = tasks.filter((_, i) => i !== index);
-    setTasks(newTasks);
+    setTasks(tasks.filter((_, i) => i !== index));
   };
 
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
 
-  // const currentDate = new Date().toDateString();
-  // const currentTime = new Date().toTimeString();
-
-
-
-
-
-  //* Streak Implementation
-  const recordTimeKey = "recordStreakTime";
-  const recordDateKey = "recordStreakDate";
-
-  const [currDate, setCurrDate] = useState(() => {
-    return localStorage.getItem(recordDateKey) || "";
-    // return JSON.parse(streakDate);
-  });
-
-  const [currTime, setCurrTime] = useState(() => {
-    return localStorage.getItem(recordTimeKey) || "";
-    // return JSON.parse(streakTime);
-  });
-
-  const streakKey = "streak";
-
-  const [streak, setStreak] = useState(() => {
-    return Number(localStorage.getItem(streakKey)) || 0;
-  });
-
-
-  useEffect(() => {
-    const today = new Date().toDateString();
-
-    //Calculating yesterday's date so that streak will break if one day not visited
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayString = yesterday.toDateString();
-
-    const lastDate = localStorage.getItem(recordDateKey);
-    const savedStreak = Number(localStorage.getItem(streakKey)) || 0;
-
-    let newStreak = 0;
-
-    if (!lastDate || savedStreak === 0) {
-      newStreak = 1;
-    } else if (lastDate === today) {
-      newStreak = savedStreak;
-    } else if (lastDate === yesterdayString) {
-      newStreak = savedStreak + 1;
-    } else {
-      newStreak = 1; //Streak broken cause Missed one day
-    }
-
-    setStreak(newStreak);
-
-    localStorage.setItem(streakKey, newStreak);
-    localStorage.setItem(recordDateKey, today);
-  }, []);
-
-  
-  useEffect(() => {
-    const now = new Date();
-    const todayDate = now.toDateString();
-    const todayTime = now.toTimeString();
-
-    setCurrDate(todayDate);
-    setCurrTime(todayTime);
-
-    // localStorage.setItem(recordDateKey, todayDate);
-    localStorage.setItem(recordTimeKey, todayTime);
-  }, []);
-
-  
-
-
-  // localStorage.setItem(recordStreakTime, JSON.stringify(currTime));
-  // localStorage.setItem(recordStreakDate, JSON.stringify(currDate));
-
   return (
     <div className="card">
       <h3>{title}</h3>
-      <div>
-        {title === "Tasks" && (
-          <>
-            <input
-              value={task}
-              onChange={(e) => setTask(e.target.value)}
-              placeholder="Enter Task"
-            ></input>
 
-            <button onClick={addTask}>Add Task</button>
+      {title === "Tasks" && (
+        <div>
+          <input
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+            placeholder="Enter Task"
+          />
+          <button onClick={addTask}>Add Task</button>
+          <ul className="card__list">
+            {tasks.map((t, i) => (
+              <li key={i} className="card__task-item">
+                <span>{t}</span>
+                <button className="card__delete" onClick={() => deleteTask(i)}>
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-            <ul className="card__list">
-              {tasks.map((t, i) => (
-                <li key={i} className="card__task-item">
-                  <span>{t}</span>
-                  <button
-                    className="card__delete"
-                    onClick={() => deleteTask(i)}
-                  >
-                    ✕
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
+      {title === "Focus-Time" && (
+        <div>
+          <div className="card__timer">
+            <span className="card__time">
+              {String(minutes).padStart(2, "0")}:
+              {String(seconds).padStart(2, "0")}
+            </span>
+          </div>
+          <div className="card__buttons">
+            <button className="card__btn" onClick={startTimer}>
+              Start
+            </button>
+            <button className="card__btn" onClick={pauseTimer}>
+              Pause
+            </button>
+            <button className="card__btn card__btn--reset" onClick={resetTimer}>
+              Reset
+            </button>
+          </div>
+        </div>
+      )}
 
-      <div>
-        {title === "Focus-Time" && (
-          <>
-            <div className="card__timer">
-              <span className="card__time">
-                {String(minutes).padStart(2, "0")}:
-                {String(seconds).padStart(2, "0")}
-              </span>
-            </div>
-
-            <div className="card__buttons">
-              <button className="card__btn" onClick={startTimer}>
-                Start
-              </button>
-              <button className="card__btn" onClick={pauseTimer}>
-                Pause
-              </button>
-              <button
-                className="card__btn card__btn--reset"
-                onClick={resetTimer}
-              >
-                Reset
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div>
-        {title === "Streak" && (
-          <>
-            <h2>{streak} Days</h2>
-          </>
-        )}
-      </div>
+      {title === "Streak" && (
+        <div>
+          <h2>{streak} Days</h2>
+        </div>
+      )}
     </div>
   );
 }
